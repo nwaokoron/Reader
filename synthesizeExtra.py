@@ -47,34 +47,45 @@ def textToSpeech(input_url):
     print("downloaded") #TODO: Since download fails for some urls. let's wrap it with an exception and use and
     # another library to get the main content.
 
-    synthesis_input = texttospeech.SynthesisInput(text=article_content[:4000])
+    audio_content_list = []
+    for i in range(0, len(article_content), 4000):
+            
 
-    # Build the voice request, select the language code ("en-US") and the ssml
-    # voice gender ("neutral")
-    # voice = texttospeech.VoiceSelectionParams(
-    #     language_code="en-US", ssml_gender=texttospeech.SsmlVoiceGender.FEMALE
-    # )
+        synthesis_input = texttospeech.SynthesisInput(text=article_content[i:i+4000])
 
-    voice = texttospeech.VoiceSelectionParams(
-    language_code="en-US", name="en-US-Wavenet-B", ssml_gender=texttospeech.SsmlVoiceGender.MALE
-)
+        # Build the voice request, select the language code ("en-US") and the ssml
+        # voice gender ("neutral")
+        # voice = texttospeech.VoiceSelectionParams(
+        #     language_code="en-US", ssml_gender=texttospeech.SsmlVoiceGender.FEMALE
+        # )
 
-    # Select the type of audio file you want returned
-    audio_config = texttospeech.AudioConfig(
-        audio_encoding=texttospeech.AudioEncoding.MP3,
+        voice = texttospeech.VoiceSelectionParams(
+        language_code="en-US", name="en-US-Wavenet-B", ssml_gender=texttospeech.SsmlVoiceGender.MALE
     )
 
-    # Perform the text-to-speech request on the text input with the selected
-    # voice parameters and audio file type
-    response = client.synthesize_speech(
-        input=synthesis_input, voice=voice, audio_config=audio_config
-    )
+        # Select the type of audio file you want returned
+        audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3,
+        )
 
-    # The response's audio_content is binary.
-    with open("output.mp3", "wb") as out:
-        # Write the response to the output file.
-        out.write(response.audio_content)
-        print('Audio content written to file "output.mp3"')
+        # Perform the text-to-speech request on the text input with the selected
+        # voice parameters and audio file type
+        response = client.synthesize_speech(
+            input=synthesis_input, voice=voice, audio_config=audio_config
+        )
+
+        # The response's audio_content is binary.
+        audio_content_list.append(response.audio_content)
+    
+    # take audio_content_list and turn it into one audio file
+    for i in range(len(audio_content_list)):
+        with open("output.mp3", "ab") as out:
+            out.write(audio_content_list[i])
+
+
+# [END tts_synthesize_text]
+
+# [START tts_synthesize_text]
 
 
 user_input = input("web page url you want to convert to speech: ")
