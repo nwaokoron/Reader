@@ -7,17 +7,24 @@ import trafilatura
 
 
 
+# textToSpeech take an input url and converst the main content of that site converts
+# it to speech and saves it as an mp3 file.
 def textToSpeech(input_url):        
- 
     # Instantiates a client
     client = texttospeech.TextToSpeechClient()
     article_content = ""
+    filename = "output.mp3"
     # Set the text input to be synthesized
     article = Article(url=input_url)
     try:
         article.download() # try downloading with newpaper library
         article_content = article.text
         article.parse()
+        
+        # If length of article_content is 0 throw an exception
+        if len(article_content) == 0:
+            raise Exception("article_content is empty")
+            
     except Exception as e:
         print("download failed via newspaper library")
         HEADERS = {'User-Agent': 'Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'}
@@ -48,9 +55,7 @@ def textToSpeech(input_url):
     # another library to get the main content.
 
     audio_content_list = []
-    for i in range(0, len(article_content), 4000):
-            
-
+    for i in range(0, len(article_content), 4000): # Dealing with 5k char Limit per Google API
         synthesis_input = texttospeech.SynthesisInput(text=article_content[i:i+4000])
 
         # Build the voice request, select the language code ("en-US") and the ssml
@@ -79,14 +84,15 @@ def textToSpeech(input_url):
     
     # take audio_content_list and turn it into one audio file
     for i in range(len(audio_content_list)):
-        with open("output.mp3", "ab") as out:
+        with open(filename, "ab") as out:
             out.write(audio_content_list[i])
 
-
+    return filename
 # [END tts_synthesize_text]
 
 # [START tts_synthesize_text]
 
 
-user_input = input("web page url you want to convert to speech: ")
-textToSpeech(user_input)
+# uncomment to run function from command line
+# user_input = input("web page url you want to convert to speech: ")
+# textToSpeech(user_input)
