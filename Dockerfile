@@ -28,7 +28,8 @@ ENV APP_HOME /app
 WORKDIR $APP_HOME
 COPY . ./
 
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/secrets/reader-400005-2dd7424c38e6.json
+# Uncomment for local Docker testing
+#ENV GOOGLE_APPLICATION_CREDENTIALS=/app/secrets/reader-400005-2dd7424c38e6.json
 
 # Install production dependencies.
 RUN pip install --no-cache-dir -r requirements.txt
