@@ -1,3 +1,4 @@
 /readerEnv
 /secrets
 __pycache__/
+output.*
