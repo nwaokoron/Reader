@@ -42,3 +42,10 @@ docker exec -it <container> bash
 ```
 
 `testing`
+
+
+depeloyed on google cloud run
+https://console.cloud.google.com/run?hl=en&project=reader-400005
+
+how to deploy
+https://cloud.google.com/run/docs/deploying-source-code

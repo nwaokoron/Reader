@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import uuid
 from google.cloud import texttospeech
 
 
-def synthesize_long_audio(input_url):
+def synthesize_long_audio(content):
     """
     Synthesizes long input, writing the resulting audio to `output_gcs_uri`.
 
@@ -26,12 +27,17 @@ def synthesize_long_audio(input_url):
     location = "us-central1"
 
     # TODO(developer): Create Cloud Storage in order to use this approach. 
-    # output_gcs_uri = 'YOUR_OUTPUT_GCS_URI'
+
+    audio_uuid = uuid.uuid4()
+
+    output_gcs_uri = f'gs://reader_audio_bucket/' + str(audio_uuid) + ".wav"
+
+    # Instantiates a client
 
     client = texttospeech.TextToSpeechLongAudioSynthesizeClient()
 
     input = texttospeech.SynthesisInput(
-        text="Test input. Replace this with any text you want to synthesize, up to 1 million bytes long!"
+        text = content
     )
 
     audio_config = texttospeech.AudioConfig(
@@ -39,7 +45,7 @@ def synthesize_long_audio(input_url):
     )
 
     voice = texttospeech.VoiceSelectionParams(
-        language_code="en-US", name="en-US-Standard-A"
+        language_code="en-US", name="en-US-Polyglot-1"
     )
 
     parent = f"projects/{project_id}/locations/{location}"
@@ -60,3 +66,5 @@ def synthesize_long_audio(input_url):
         "\nFinished processing, check your GCS bucket to find your audio file! Printing what should be an empty result: ",
         result,
     )
+
+    return "https://storage.googleapis.com/reader_audio_bucket/" + str(audio_uuid) + ".wav"

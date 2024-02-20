@@ -36,6 +36,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install google-cloud-texttospeech
 RUN pip install newspaper3k
 RUN pip install trafilatura
+RUN pip install -U flask-cors
 
 
 # Run the web service on container startup. Here we use the gunicorn
